@@ -32,11 +32,13 @@ public class Map {
     private int SecondaryTileID;
 
     int Size;
+    private int gridSize;
 
     public Map(int baseTileID, int secondaryTileID, int Size) {
         BaseTileID = baseTileID;
         SecondaryTileID = secondaryTileID;
         this.Size = Size;
+        this.gridSize = Size / 2;
     }
 
     public HeightMap BaseLayer;
@@ -62,19 +64,27 @@ public class Map {
 
 
 
-        SpriteBatch spriteBatch = new SpriteBatch(mTextureRegion.getTexture(), Size * Size, vertexBufferObjectManager);
 
-        for (int x = 0; x < Size; x++)
-            for (int y = 0; y < Size; y++)
+        SpriteBatch spriteBatch = new SpriteBatch(mTextureRegion.getTexture(), BaseLayer.getFullSize(), vertexBufferObjectManager); //Todo Verifier la taille!
+
+        for (int x = 1; x < Size - 2; x++)
+            for (int y = 1; y < Size - 2; y++)
             {
-               spriteBatch.draw(mTextureRegion.getTextureRegion(BaseTileID), x * 32, y * 32, 32, 32, 1.0f, 1.0f, 1.0f, 1.0f);
-                if ((int)BaseLayer.get(x, y) != BaseTileID)
-                    spriteBatch.draw(mTextureRegion.getTextureRegion((int)BaseLayer.get(x, y)), x * 32, y * 32, 32, 32, 1.0f, 1.0f, 1.0f, 1.0f);
-
+                if ((int)BaseLayer.get(x, y) == BaseTileID)
+                    spriteBatch.draw(mTextureRegion.getTextureRegion(BaseTileID), x * 32, y * 32, 32, 32, 1.0f, 1.0f, 1.0f, 1.0f);
+                else {
+                    spriteBatch.draw(mTextureRegion.getTextureRegion(SecondaryTileID), x * 32, y * 32, 32, 32, 1.0f, 1.0f, 1.0f, 1.0f);
+                    if ((int) BaseLayer.get(x, y) != SecondaryTileID)
+                        spriteBatch.draw(mTextureRegion.getTextureRegion((int) BaseLayer.get(x, y)), x * 32, y * 32, 32, 32, 1.0f, 1.0f, 1.0f, 1.0f);
+                }
             }
 
         spriteBatch.submit();
         mScene.attachChild(spriteBatch);
         mScene.registerTouchArea(spriteBatch);
+    }
+
+    public int getGridSize() {
+        return gridSize;
     }
 }

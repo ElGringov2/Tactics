@@ -5,6 +5,10 @@ import android.content.res.AssetManager;
 
 import com.dragonrider.tactics.gear.Wearable;
 
+import org.andengine.entity.modifier.LoopEntityModifier;
+import org.andengine.entity.modifier.MoveModifier;
+import org.andengine.entity.modifier.ScaleModifier;
+import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.input.touch.TouchEvent;
@@ -14,6 +18,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.debug.Debug;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,9 +35,9 @@ public class Entity {
     public static String[] sHairTypes = {"bangs","bangslong","bangslong2","bangsshort","bedhead","bunches","jewfro","long","longhawk","longknot","loose","messy1","messy2","mohawk","page","page2","parted","pixie","plain","ponytail","ponytail2","princess","shorthawk","shortknot","shoulderl","shoulderr","swoop","unkempt","xlong","xlongknot"};
     public static String[] sHairColors = {"black","blonde","blonde2","blue","blue2","brown","brown2","brunette","brunette2","dark-blonde","gold","gray","gray2","green","green2","light-blonde","light-blonde2","pink","pink2","purple","raven","raven2","redhead","redhead2","ruby-red","white-blonde","white-blonde2","white-cyan","white"};
 
-    public enum BodyTypes {DARK, DARK2, DARKELF, DARKELF2, LIGHT, ORC, RED_ORC, TANNED, TANNED2};
-    public enum HairTypes {BANGS,BANGSLONG,BANGSLONG2,BANGSSHORT,BEDHEAD,BUNCHES,JEWFRO,LONG,LONGHAWK,LONGKNOT,LOOSE,MESSY1,MESSY2,MOHAWK,PAGE,PAGE2,PARTED,PIXIE,PLAIN,PONYTAIL,PONYTAIL2,PRINCESS,SHORTHAWK,SHORTKNOT,SHOULDERL,SHOULDERR,SWOOP,UNKEMPT,XLONG,XLONGKNOT};
-    public enum HairColors {BLACK,BLONDE,BLONDE2,BLUE,BLUE2,BROWN,BROWN2,BRUNETTE,BRUNETTE2,DARKBLONDE,GOLD,GRAY,GRAY2,GREEN,GREEN2,LIGHTBLONDE,LIGHTBLONDE2,PINK,PINK2,PURPLE,RAVEN,RAVEN2,REDHEAD,REDHEAD2,RUBYRED,WHITEBLONDE,WHITEBLONDE2,WHITECYAN,WHITE};
+    public enum BodyTypes {DARK, DARK2, DARKELF, DARKELF2, LIGHT, ORC, RED_ORC, TANNED, TANNED2}
+    public enum HairTypes {BANGS,BANGSLONG,BANGSLONG2,BANGSSHORT,BEDHEAD,BUNCHES,JEWFRO,LONG,LONGHAWK,LONGKNOT,LOOSE,MESSY1,MESSY2,MOHAWK,PAGE,PAGE2,PARTED,PIXIE,PLAIN,PONYTAIL,PONYTAIL2,PRINCESS,SHORTHAWK,SHORTKNOT,SHOULDERL,SHOULDERR,SWOOP,UNKEMPT,XLONG,XLONGKNOT}
+    public enum HairColors {BLACK,BLONDE,BLONDE2,BLUE,BLUE2,BROWN,BROWN2,BRUNETTE,BRUNETTE2,DARKBLONDE,GOLD,GRAY,GRAY2,GREEN,GREEN2,LIGHTBLONDE,LIGHTBLONDE2,PINK,PINK2,PURPLE,RAVEN,RAVEN2,REDHEAD,REDHEAD2,RUBYRED,WHITEBLONDE,WHITEBLONDE2,WHITECYAN,WHITE}
 
     private TiledTextureRegion mBodyTextureRegion;
     private TiledTextureRegion mHairTextureRegion;
@@ -80,19 +85,31 @@ public class Entity {
 
     }
 
+    public String Name = "";
+
+
+
 
     public interface IOnTouch {
-        void OnTouch(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY);
+        void OnTouch(Entity entity, TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY);
     }
 
     public IOnTouch OnTouch = null;
-    public void AttachToScene (Scene mScene, VertexBufferObjectManager vertexBufferObjectManager) {
+
+    private void RaiseOnTouch(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+
+        OnTouch.OnTouch(this, pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+    }
+
+    public void AttachToScene (org.andengine.entity.Entity Layer, Scene mScene, VertexBufferObjectManager vertexBufferObjectManager) {
 
         mBodySprite = new AnimatedSprite(PositionX, PositionY, mBodyTextureRegion, vertexBufferObjectManager) {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                if (OnTouch == null) return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
-                OnTouch.OnTouch(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                if (OnTouch == null)
+                    return super.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+                else
+                    RaiseOnTouch(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
                 return true;
             }
         };
@@ -111,15 +128,15 @@ public class Entity {
 
         for (int i = 0; i < Wear.size(); i++) {
             if (Wear.get(i).DrawOrder < 2)
-                mScene.attachChild(Wear.get(i).CreateSprite(PositionX, PositionY, vertexBufferObjectManager));
+                Layer.attachChild(Wear.get(i).CreateSprite(PositionX, PositionY, vertexBufferObjectManager));
         }
 
-        mScene.attachChild(mBodySprite);
-        mScene.attachChild(mHairSprite);
+        Layer.attachChild(mBodySprite);
+        Layer.attachChild(mHairSprite);
 
         for (int i = 0; i < Wear.size(); i++) {
             if (Wear.get(i).DrawOrder > 2)
-                mScene.attachChild(Wear.get(i).CreateSprite(PositionX, PositionY, vertexBufferObjectManager));
+                Layer.attachChild(Wear.get(i).CreateSprite(PositionX, PositionY, vertexBufferObjectManager));
         }
 
 
@@ -216,5 +233,16 @@ public class Entity {
     public void AddWearable(Wearable wear) {
         this.Wear.add(wear);
 
+    }
+
+
+    public void Select(float pRed, float pGreen, float pBlue, float pAlpha) {
+        mHairSprite.setColor(pRed, pGreen, pBlue, pAlpha);
+        mBodySprite.setColor(pRed, pGreen, pBlue, pAlpha);
+
+    }
+    public void Unselect() {
+        mHairSprite.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        mBodySprite.setColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 }
