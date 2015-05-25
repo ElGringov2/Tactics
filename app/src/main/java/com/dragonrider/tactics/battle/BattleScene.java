@@ -10,18 +10,12 @@ import com.dragonrider.tactics.ui.hud.CustomHUD;
 import com.dragonrider.tactics.utils.Fonts;
 
 import org.andengine.engine.camera.Camera;
-import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureManager;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.util.adt.color.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +63,7 @@ public class BattleScene extends Scene {
         mCamera.setHUD(mNeutralHud);
 
 
-        mMap.AttachToScene(this, vbom);
+        mMap.AttachBaseLayerToScene(this, vbom);
 
 
 
@@ -86,7 +80,10 @@ public class BattleScene extends Scene {
 
 
 
+
         this.attachChild(selectionRectangle);
+
+        mMap.AttachTopLayerToScene(this, vbom);
 
     }
 
@@ -146,4 +143,11 @@ public class BattleScene extends Scene {
 
         entity.Unselect();
     }
+
+
+    private void MoveEntity(Entity selectedEntity) {
+
+    }
+
+
 }

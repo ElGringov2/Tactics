@@ -1,14 +1,12 @@
 package com.dragonrider.tactics.Tilemap;
 
-import com.dragonrider.tactics.utils.HeightMap;
+import com.dragonrider.tactics.utils.LayerMap;
 import com.dragonrider.tactics.utils.PerlinNoise;
-
-import org.andengine.util.debug.Debug;
 
 import java.util.Random;
 
 /**
- * Created by mge637 on 13/05/2015.
+ * Created by mge637 on 13/05/2015. code code code
  */
 public class CountrysideMapGenerator extends MapGenerator {
     private int seed;
@@ -23,32 +21,49 @@ public class CountrysideMapGenerator extends MapGenerator {
     @Override
     public Map Generate(int Size) {
 
-        int baseTileID = 118;
-        int secondaryTileID = 115;
 
-        Map map = new Map(baseTileID, secondaryTileID, Size);
+
+        Map map = new Map(Size);
         Random random = new Random(seed);
 
 
         PerlinNoise noise = new PerlinNoise(random.nextInt());
-        map.BaseLayer = new HeightMap(Size);
 
 
 
+        map.BaseLayer = new LayerMap(Size);
         for (int i = 0; i < Size ; i++)
             for (int j = 0; j < Size ; j++) {
-                float fValue = noise.Noise(32.0f * i / (float) Size, 32.0f * j / (float) Size, 0);
-                map.BaseLayer.set(fValue > -0.1f ? baseTileID : secondaryTileID, i, j);
+                float fValue = noise.Noise(8.0f * i / (float) Size, 8.0f * j / (float) Size, 0);
+                map.BaseLayer.add(fValue > -0.2f ? 118 : 115, i, j);
 
 
             }
 
 
 
-        TileDecorator decorator = new TileDecorator(baseTileID, secondaryTileID, 54, 55, 22, 23, 117, 119, 150, 86, 149, 151, 85, 87);
+        TileDecorator decorator = new TileDecorator(118, 115, 54, 55, 22, 23, 117, 119, 150, 86, 149, 151, 85, 87);
         decorator.Decorate(map.BaseLayer);
 
-        Debug.d("hopla", "Taille=" + String.valueOf(map.BaseLayer.getFullSize()));
+
+        noise = new PerlinNoise(random.nextInt());
+
+
+        float mHeightLevel = 0.25f;
+        map.TreeLayer = new LayerMap(Size);
+        for (int i = 0; i < Size ; i++)
+            for (int j = 0; j < Size ; j++)
+                if (noise.Noise(32.0f * i / (float) Size, 32.0f * j / (float) Size, 0) > mHeightLevel)
+                    map.TreeLayer.add(634, i, j);
+
+
+
+        map.UpperLevelLayer = new LayerMap(Size);
+
+
+        TreeTileDecorator treeTileDecorator = new TreeTileDecorator(636, 638, new int[] { 508, 540, 572, 604}, new int[] { 507, 539, 571, 603}, new int[] { 509, 541, 573, 605});
+        treeTileDecorator.DecorateUpperLayer(map.TreeLayer, map.UpperLevelLayer);
+
 
 
         return map;

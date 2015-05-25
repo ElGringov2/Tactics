@@ -60,8 +60,12 @@ public class Character {
 
 
 
-    public void LevelUpSkill(int SkillID) {
-        float gain = getSkillValue(SkillID);
+    public void LevelUpSkill(int SkillID, int Difficulty) {
+        float value = getSkillValue(SkillID);
+        int gain = -Difficulty;
+
+        this.SkillsExperience[SkillID] += gain;
+
 
     }
 

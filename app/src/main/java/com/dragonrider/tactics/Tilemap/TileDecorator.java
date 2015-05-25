@@ -1,8 +1,11 @@
 package com.dragonrider.tactics.Tilemap;
 
 
-import com.dragonrider.tactics.utils.HeightMap;
+import com.dragonrider.tactics.utils.LayerMap;
+import com.dragonrider.tactics.utils.TileInfo;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -129,7 +132,7 @@ public class TileDecorator {
                 {-1, -1, -1}};
         mLeftUpperInsideCorner = new int[][] {
                 {-1, -1, -1},
-                {SecondaryTileID, SecondaryTileID, -1},
+                {-1, SecondaryTileID, SecondaryTileID},
                 {-1, SecondaryTileID, MainTileID}};
         mRightUpperInsideCorner = new int[][] {
                 {-1, -1, -1},
@@ -141,13 +144,15 @@ public class TileDecorator {
                 {-1, -1, -1}};
 
 
+
+
     }
 
-    private int[][] getMatrix(HeightMap map, int x, int y) {
+    private int[][] getMatrix(LayerMap map, int x, int y) {
         return new int[][]  {
-                { (int)map.get(x-1, y+1), (int)map.get(x, y+1), (int)map.get(x+1, y+1) },
-                { (int)map.get(x-1, y), (int)map.get(x, y), (int)map.get(x+1, y) },
-                { (int)map.get(x-1, y-1), (int)map.get(x, y-1), (int)map.get(x+1, y-1) }
+                { map.getFirst(x - 1, y + 1), map.getFirst(x, y + 1), map.getFirst(x + 1, y + 1) },
+                { map.getFirst(x - 1, y), map.getFirst(x, y), map.getFirst(x + 1, y) },
+                { map.getFirst(x - 1, y-1), map.getFirst(x, y-1), map.getFirst(x + 1, y - 1) }
         };
     }
 
@@ -160,10 +165,8 @@ public class TileDecorator {
         return true;
     }
 
-    public void Decorate(HeightMap map) {
+    public void Decorate(LayerMap map) {
 
-
-        HeightMap decoration = new HeightMap(map.getSize());
 
 
 
@@ -173,57 +176,69 @@ public class TileDecorator {
                 int[][] mat = getMatrix(map, x, y);
 
                 if (Check(mat, mUndecorable1) || Check(mat, mUndecorable2)) {
-                    map.set(MainTileID, x, y);
+                    map.set(new int[] { MainTileID }, x, y);
 
 
                     for (int x2 = x - 1; x2 < x + 1; x2++) {
                         for (int y2 = y - 1; y2 < y + 1; y2++) {
-                            decoration.set(DecorateCell(map, x2, y2), x2, y2);
+                            List<TileInfo> decoration = DecorateCell(map, x2, y2);
+                            if (decoration != null)
+                                map.set(decoration, x2, y2);
                         }
                     }
                 }
-
-                decoration.set(DecorateCell(map, x, y), x, y);
+                List<TileInfo> decoration = DecorateCell(map, x, y);
+                if (decoration != null)
+                    map.set(decoration, x, y);
 
             }
 
 
-        int mod = map.Update(decoration);
 
-        map.setFullSize(map.getFullSize() + mod);
+
+
     }
 
 
-    private int DecorateCell(HeightMap map, int x, int y) {
-        if (x <= 0 || y <= 0 || x >= map.getSize() - 1 || y >= map.getSize() - 1) return -1;
+    private List<TileInfo> DecorateCell(LayerMap map, final int x, final int y) {
+        if (x <= 0 || y <= 0 || x >= map.getSize() - 1 || y >= map.getSize() - 1) return null;
+
+
+        ArrayList<TileInfo> tiles = new ArrayList<>();
+        tiles.add(new TileInfo(map.getFirst(x, y)));
+
+
 
         int[][] mat = getMatrix(map, x, y);
         if (Check(mat, mLeftCorner))
-            return LeftCornerID;
-        else if (Check(mat, mRightCorner))
-            return RightCornerID;
-        else if (Check(mat, mLowerCorner))
-            return LowerCornerID;
-        else if (Check(mat, mUpperCorner))
-            return UpperCornerID;
-        else if (Check(mat, mRightUpperCorner))
-            return UpperRightCornerID;
-        else if (Check(mat, mRightLowerCorner))
-            return LowerRightCornerID;
-        else if (Check(mat, mLeftUpperCorner))
-            return UpperLeftCornerID;
-        else if (Check(mat, mLeftLowerCorner))
-            return LowerLeftCornerID;
-        else if (Check(mat, mRightUpperInsideCorner))
-            return UpperRightInsideCornerID;
-        else if (Check(mat, mRightLowerInsideCorner))
-            return LowerRightInsideCornerID;
-        else if (Check(mat, mLeftUpperInsideCorner))
-            return UpperLeftInsideCornerID;
-        else if (Check(mat, mLeftLowerInsideCorner))
-            return LowerLeftInsideCornerID;
+            tiles.add(new TileInfo(LeftCornerID));
+        if (Check(mat, mRightCorner))
+            tiles.add(new TileInfo(RightCornerID));
+        if (Check(mat, mLowerCorner))
+            tiles.add(new TileInfo(LowerCornerID));
+        if (Check(mat, mUpperCorner))
+            tiles.add(new TileInfo(UpperCornerID));
+        if (Check(mat, mRightUpperCorner))
+            tiles.add(new TileInfo(UpperRightCornerID));
+        if (Check(mat, mRightLowerCorner))
+            tiles.add(new TileInfo(LowerRightCornerID));
+        if (Check(mat, mLeftUpperCorner))
+            tiles.add(new TileInfo(UpperLeftCornerID));
+        if (Check(mat, mLeftLowerCorner))
+            tiles.add(new TileInfo(LowerLeftCornerID));
+        if (Check(mat, mRightUpperInsideCorner))
+            tiles.add(new TileInfo(UpperRightInsideCornerID));
+        if (Check(mat, mRightLowerInsideCorner))
+            tiles.add(new TileInfo(LowerRightInsideCornerID));
+        if (Check(mat, mLeftUpperInsideCorner))
+            tiles.add(new TileInfo(UpperLeftInsideCornerID));
+        if (Check(mat, mLeftLowerInsideCorner))
+            tiles.add(new TileInfo(LowerLeftInsideCornerID));
 
-        return -1;
+        return tiles;
+
+
+
 
     }
 }

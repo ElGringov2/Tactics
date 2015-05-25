@@ -9,7 +9,7 @@ public abstract class MapGenerator {
 
 
     public Map Generate(int Size) {
-        return new Map(0, 1, Size);
+        return new Map(Size);
 
     }
 }

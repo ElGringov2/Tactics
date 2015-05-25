@@ -3,6 +3,8 @@ package com.dragonrider.tactics.entity;
 
 import android.content.res.AssetManager;
 
+import com.dragonrider.tactics.GameMechanics.*;
+import com.dragonrider.tactics.GameMechanics.Character;
 import com.dragonrider.tactics.gear.Wearable;
 
 import org.andengine.entity.modifier.LoopEntityModifier;
@@ -245,4 +247,24 @@ public class Entity {
         mHairSprite.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         mBodySprite.setColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
+
+
+
+
+    private Character mCharacter = new Character();
+
+
+
+    public void Move(float newX, float newY) {
+        mBodySprite.resetEntityModifiers();
+        mHairSprite.resetEntityModifiers();
+
+
+
+        MoveModifier mod = new MoveModifier(400f, this.mBodySprite.getX(), this.mBodySprite.getY(), newX, newY);
+
+        mBodySprite.registerEntityModifier(mod);
+        mHairSprite.registerEntityModifier(mod);
+    }
+
 }
