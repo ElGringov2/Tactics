@@ -43,6 +43,56 @@ public class AStar {
     }
 
 
+/*
+    public List<AStarEntry> GetShortestPath(int pX, int pY, Map map) {
+        OpenList = new ArrayList<>();
+        OpenList.add(start);
+
+        ClosedList.clear();
+
+
+        while (OpenList.size() > 0) {
+
+            final AStarEntry actual = OpenList.get(0);
+
+
+
+            AStarEntry north = new AStarEntry() {{ x = actual.x; y = actual.y + 1; Score = map.getMapWeight(actual.x, actual.y + 1) + actual.Score + 1;}};
+            if (north.Score <= pMoveScore)
+                checkEntry(north);
+
+            AStarEntry south = new AStarEntry() {{ x = actual.x; y = actual.y - 1; Score = map.getMapWeight(actual.x, actual.y - 1) + actual.Score + 1;}};
+            if (south.Score <= pMoveScore)
+                checkEntry(south);
+
+            AStarEntry east = new AStarEntry() {{ x = actual.x + 1; y = actual.y; Score = map.getMapWeight(actual.x + 1, actual.y) + actual.Score + 1;}};
+            if (east.Score <= pMoveScore)
+                checkEntry(east);
+
+            AStarEntry west = new AStarEntry() {{ x = actual.x - 1; y = actual.y; Score = map.getMapWeight(actual.x - 1, actual.y) + actual.Score + 1;}};
+            if (west.Score <= pMoveScore)
+                checkEntry(west);
+
+
+            OpenList.remove(actual);
+
+            AStarEntry existing = closedListFirstOrDefault(actual.x, actual.y);
+            if (existing != null) {
+                if (existing.Score > actual.Score) {
+                    ClosedList.add(actual);
+                    ClosedList.remove(existing);
+                }
+            }
+            else
+                ClosedList.add(actual);
+
+        }
+
+
+        return ClosedList;
+    }
+
+*/
     public List<AStarEntry> GetAllPath (float pMoveScore, final Map map) {
 
 
