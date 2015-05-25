@@ -22,11 +22,12 @@ public class Map {
 
 
     int Size;
+    int gridSize;
 
 
     public Map(int Size) {
         this.Size = Size;
-
+        this.gridSize = Size / 2 - 1;
     }
 
     public LayerMap BaseLayer;
@@ -54,8 +55,8 @@ public class Map {
 
         SpriteBatch spriteBatch = new SpriteBatch(mTextureRegion.getTexture(), BaseLayer.getFullSize() + TreeLayer.getFullSize(), vertexBufferObjectManager);
 
-        for (int x = 1; x < Size - 2; x++)
-            for (int y = 1; y < Size - 2; y++)
+        for (int x = 1; x < Size - 3; x++)
+            for (int y = 1; y < Size - 3; y++)
             {
 
                 for (TileInfo info : BaseLayer.get(x, y))
@@ -83,8 +84,8 @@ public class Map {
 
         SpriteBatch spriteBatch = new SpriteBatch(mTextureRegion.getTexture(), UpperLevelLayer.getFullSize() , vertexBufferObjectManager);
 
-        for (int x = 1; x < Size - 2; x++)
-            for (int y = 1; y < Size - 2; y++) {
+        for (int x = 1; x < Size - 3; x++)
+            for (int y = 1; y < Size - 3; y++) {
 
                 for (TileInfo info : UpperLevelLayer.get(x, y))
                     spriteBatch.draw(mTextureRegion.getTextureRegion(info.getTileID()), x * 32, y * 32, 32, 32, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -97,9 +98,9 @@ public class Map {
         mScene.registerTouchArea(spriteBatch);
     }
 
-//    public int getGridSize() {
-//        return gridSize;
-//    }
+    public int getGridSize() {
+        return gridSize;
+    }
 
 //
 //
@@ -121,4 +122,34 @@ public class Map {
 //
 //
 //    }
+
+    public float getMapWeight(int pX, int pY) {
+
+        float fWeight = 0.0f;
+
+
+        try {
+            fWeight += this.BaseLayer.getWeight(pX * 2 - 1, pY * 2 - 1) +
+                    this.BaseLayer.getWeight(pX * 2 - 1, pY * 2) +
+                    this.BaseLayer.getWeight(pX * 2, pY * 2 - 1) +
+                    this.BaseLayer.getWeight(pX * 2, pY * 2);
+
+            fWeight += this.TreeLayer.getWeight(pX * 2 - 1, pY * 2 - 1) +
+                    this.TreeLayer.getWeight(pX * 2 - 1, pY * 2) +
+                    this.TreeLayer.getWeight(pX * 2, pY * 2 - 1) +
+                    this.TreeLayer.getWeight(pX * 2, pY * 2);
+
+            fWeight += this.UpperLevelLayer.getWeight(pX * 2 - 1, pY * 2 - 1) +
+                    this.UpperLevelLayer.getWeight(pX * 2 - 1, pY * 2) +
+                    this.UpperLevelLayer.getWeight(pX * 2, pY * 2 - 1) +
+                    this.UpperLevelLayer.getWeight(pX * 2, pY * 2);
+        }
+        catch (Exception e) {
+            return 10f;
+        }
+
+
+        return fWeight;
+
+    }
 }

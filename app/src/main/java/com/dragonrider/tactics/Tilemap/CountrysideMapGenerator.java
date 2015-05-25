@@ -35,14 +35,14 @@ public class CountrysideMapGenerator extends MapGenerator {
         for (int i = 0; i < Size ; i++)
             for (int j = 0; j < Size ; j++) {
                 float fValue = noise.Noise(8.0f * i / (float) Size, 8.0f * j / (float) Size, 0);
-                map.BaseLayer.add(fValue > -0.2f ? 118 : 115, i, j);
+                map.BaseLayer.add(fValue > -0.2f ? 118 : 115, 0f, i, j);
 
 
             }
 
 
 
-        TileDecorator decorator = new TileDecorator(118, 115, 54, 55, 22, 23, 117, 119, 150, 86, 149, 151, 85, 87);
+        TileDecorator decorator = new TileDecorator(118, 115, 54, 55, 22, 23, 117, 119, 150, 86, 149, 151, 85, 87, 0.0f);
         decorator.Decorate(map.BaseLayer);
 
 
@@ -54,7 +54,7 @@ public class CountrysideMapGenerator extends MapGenerator {
         for (int i = 0; i < Size ; i++)
             for (int j = 0; j < Size ; j++)
                 if (noise.Noise(32.0f * i / (float) Size, 32.0f * j / (float) Size, 0) > mHeightLevel)
-                    map.TreeLayer.add(634, i, j);
+                    map.TreeLayer.add(634, 0.25f, i, j);
 
 
 

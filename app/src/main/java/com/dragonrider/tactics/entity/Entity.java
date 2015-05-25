@@ -2,25 +2,24 @@ package com.dragonrider.tactics.entity;
 
 
 import android.content.res.AssetManager;
+import android.os.Debug;
+import android.util.Log;
 
-import com.dragonrider.tactics.GameMechanics.*;
 import com.dragonrider.tactics.GameMechanics.Character;
 import com.dragonrider.tactics.gear.Wearable;
 
-import org.andengine.entity.modifier.LoopEntityModifier;
+import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.MoveModifier;
-import org.andengine.entity.modifier.ScaleModifier;
-import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureManager;
 import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.ITextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.util.debug.Debug;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +46,8 @@ public class Entity {
     private AnimatedSprite mHairSprite;
 
 
+    private org.andengine.entity.Entity baseEntity;
+
 
     private String mSex = "female";
     private String mBodyType = "tanned";
@@ -58,8 +59,8 @@ public class Entity {
 
 
 
-    public float PositionX = 100;
-    public float PositionY = 100;
+    public float PositionX = 0;
+    public float PositionY = 0;
 
     public ORIENTATION Orientation = ORIENTATION.SOUTH;
     public ANIM_STATE Animation = ANIM_STATE.IDLE;
@@ -69,6 +70,7 @@ public class Entity {
         this.mBodyType = sBodyTypes[BodyType.ordinal()];
         this.mHairString = sHairTypes[HairType.ordinal()] + "/" + sHairColors[HairColor.ordinal()];
 
+        baseEntity = new org.andengine.entity.Entity();
     }
 
     public void CreateResources(TextureManager textureManager, AssetManager assetManager) {
@@ -105,7 +107,7 @@ public class Entity {
 
     public void AttachToScene (org.andengine.entity.Entity Layer, Scene mScene, VertexBufferObjectManager vertexBufferObjectManager) {
 
-        mBodySprite = new AnimatedSprite(PositionX, PositionY, mBodyTextureRegion, vertexBufferObjectManager) {
+        mBodySprite = new AnimatedSprite(0, 0, mBodyTextureRegion, vertexBufferObjectManager) {
             @Override
             public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 if (OnTouch == null)
@@ -116,7 +118,7 @@ public class Entity {
             }
         };
 
-        mHairSprite =  new AnimatedSprite(PositionX, PositionY, mHairTextureRegion, vertexBufferObjectManager);
+        mHairSprite =  new AnimatedSprite(0, 0, mHairTextureRegion, vertexBufferObjectManager);
 
 
         mScene.registerTouchArea(mBodySprite);
@@ -133,14 +135,17 @@ public class Entity {
                 Layer.attachChild(Wear.get(i).CreateSprite(PositionX, PositionY, vertexBufferObjectManager));
         }
 
-        Layer.attachChild(mBodySprite);
-        Layer.attachChild(mHairSprite);
+        baseEntity.attachChild(mBodySprite);
+        baseEntity.attachChild(mHairSprite);
+
 
         for (int i = 0; i < Wear.size(); i++) {
             if (Wear.get(i).DrawOrder > 2)
-                Layer.attachChild(Wear.get(i).CreateSprite(PositionX, PositionY, vertexBufferObjectManager));
+                baseEntity.attachChild(Wear.get(i).CreateSprite(PositionX, PositionY, vertexBufferObjectManager));
         }
 
+
+        Layer.attachChild(baseEntity);
 
     }
 
@@ -224,10 +229,7 @@ public class Entity {
         this.PositionX = NewPosX;
         this.PositionY = NewPosY;
 
-        this.mBodySprite.setPosition(NewPosX, NewPosY);
-        this.mHairSprite.setPosition(NewPosX, NewPosY);
-        for (int i = 0; i < Wear.size(); i++)
-            Wear.get(i).setPosition(NewPosX, NewPosY);
+        this.baseEntity.setPosition(NewPosX, NewPosY);
     }
 
 
@@ -255,16 +257,45 @@ public class Entity {
 
 
 
-    public void Move(float newX, float newY) {
-        mBodySprite.resetEntityModifiers();
-        mHairSprite.resetEntityModifiers();
+    public void Move(float newX, float newY, float MoveDuration) {
+
+        if (baseEntity.getEntityModifierCount() > 0)
+            baseEntity.resetEntityModifiers();
 
 
 
-        MoveModifier mod = new MoveModifier(400f, this.mBodySprite.getX(), this.mBodySprite.getY(), newX, newY);
 
-        mBodySprite.registerEntityModifier(mod);
-        mHairSprite.registerEntityModifier(mod);
+        MoveModifier mod = new MoveModifier(MoveDuration / 3f, this.PositionX, this.PositionY, newX, newY) {
+            @Override
+            protected void onModifierFinished(IEntity pItem) {
+                //pItem.resetEntityModifiers();
+                Animation = ANIM_STATE.IDLE;
+                Orientation = ORIENTATION.SOUTH;
+                Animate();
+                super.onModifierFinished(pItem);
+            }
+        };
+
+        baseEntity.registerEntityModifier(mod);
+
+        //TODO Calculer l'angle pour l'animation
+
+        double angle = Math.atan2(newY - PositionY, newX - PositionX);
+
+
+
+        Orientation = ORIENTATION.WEST;
+        if (angle > - 3 * Math.PI / 4 && angle <= -Math.PI / 4) Orientation = ORIENTATION.SOUTH;
+        if (angle > -Math.PI / 4 && angle <= Math.PI / 4) Orientation = ORIENTATION.EAST;
+        if (angle > Math.PI / 4 && angle <= 3 * Math.PI / 4) Orientation = ORIENTATION.NORTH;
+
+        Animation = ANIM_STATE.WALKING;
+
+
+        Animate();
+
+        PositionX = newX;
+        PositionY = newY;
     }
 
 }

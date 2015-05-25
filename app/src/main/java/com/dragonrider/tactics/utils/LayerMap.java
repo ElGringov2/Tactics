@@ -40,10 +40,10 @@ public class LayerMap {
         return Heights.get(Y * Size + X);
     }
 
-    public void set(int[] pValues , int X, int Y) {
+    public void set(int[] pValues, float[] pWeights , int X, int Y) {
         Heights.set(Y * Size + X, new ArrayList<TileInfo>());
-        for (int i : pValues)
-            Heights.get(Y * Size + X).add(new TileInfo(i));
+        for (int i = 0; i < pValues.length; i++)
+            Heights.get(Y * Size + X).add(new TileInfo(pValues[i], pWeights[i]));
 
     }
 
@@ -55,10 +55,10 @@ public class LayerMap {
             this.FullSize += pValues.size();
     }
 
-    public void add(int pValue, int X, int Y) {
+    public void add(int pValue, float pWeight, int X, int Y) {
         if (Heights.get(Y * Size + X) == null)
             Heights.set(Y * Size + X, new ArrayList<TileInfo>());
-        Heights.get(Y * Size + X).add(new TileInfo(pValue));
+        Heights.get(Y * Size + X).add(new TileInfo(pValue, pWeight));
         this.FullSize++;
     }
 
@@ -74,5 +74,12 @@ public class LayerMap {
             return this.Heights.get(y * Size + x).get(0).getTileID();
         else
             return -1;
+    }
+
+    public float getWeight(int x, int y) {
+        if (this.Heights.get(y * Size + x) != null && this.Heights.get(y * Size + x).size() > 0 )
+            return this.Heights.get(y * Size + x).get(0).getTileWeight();
+        else
+            return 0f;
     }
 }

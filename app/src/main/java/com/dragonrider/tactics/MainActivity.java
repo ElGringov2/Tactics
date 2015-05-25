@@ -77,12 +77,14 @@ public class MainActivity extends SimpleBaseGameActivity {
 
 
         scene=new BattleScene(map, mCamera, this.getVertexBufferObjectManager(), this.getTextureManager(), this.getAssets(), WIDTH, HEIGHT );
-        Random r = new Random();
+        Random r = new Random(0);
 
-        for (int i = 0; i <= 47; i++) {
+        for (int i = 1; i < 63; i++) {
 
-            int mX = r.nextInt(64);
-            int mY = r.nextInt(64);
+            int mX = r.nextInt(62) + 1;
+            int mY = r.nextInt(62) + 1;
+
+
 
 
 

@@ -28,6 +28,8 @@ public class TileDecorator {
     private int LeftCornerID;
     private int UpperCornerID;
     private int LowerCornerID;
+    
+    private float DecorationWeight;
 
     public TileDecorator(int mainTileID,
                          int secondaryTileID,
@@ -42,7 +44,7 @@ public class TileDecorator {
                          int lowerLeftInsideCornerID,
                          int lowerRightInsideCornerID,
                          int upperLeftInsideCornerID,
-                         int upperRightInsideCornerID) {
+                         int upperRightInsideCornerID, float decorationWeight) {
         this.MainTileID = mainTileID;
         this.SecondaryTileID = secondaryTileID;
         this.LowerLeftCornerID = lowerLeftCornerID;
@@ -57,6 +59,7 @@ public class TileDecorator {
         LeftCornerID = leftCornerID;
         UpperCornerID = upperCornerID;
         LowerCornerID = lowerCornerID;
+        DecorationWeight = decorationWeight;
 
         InitMatrix();
     }
@@ -176,7 +179,7 @@ public class TileDecorator {
                 int[][] mat = getMatrix(map, x, y);
 
                 if (Check(mat, mUndecorable1) || Check(mat, mUndecorable2)) {
-                    map.set(new int[] { MainTileID }, x, y);
+                    map.set(new int[] { MainTileID }, new float[] { DecorationWeight }, x, y);
 
 
                     for (int x2 = x - 1; x2 < x + 1; x2++) {
@@ -205,35 +208,35 @@ public class TileDecorator {
 
 
         ArrayList<TileInfo> tiles = new ArrayList<>();
-        tiles.add(new TileInfo(map.getFirst(x, y)));
+        tiles.add(new TileInfo(map.getFirst(x, y), DecorationWeight));
 
 
 
         int[][] mat = getMatrix(map, x, y);
         if (Check(mat, mLeftCorner))
-            tiles.add(new TileInfo(LeftCornerID));
+            tiles.add(new TileInfo(LeftCornerID, DecorationWeight));
         if (Check(mat, mRightCorner))
-            tiles.add(new TileInfo(RightCornerID));
+            tiles.add(new TileInfo(RightCornerID, DecorationWeight));
         if (Check(mat, mLowerCorner))
-            tiles.add(new TileInfo(LowerCornerID));
+            tiles.add(new TileInfo(LowerCornerID, DecorationWeight));
         if (Check(mat, mUpperCorner))
-            tiles.add(new TileInfo(UpperCornerID));
+            tiles.add(new TileInfo(UpperCornerID, DecorationWeight));
         if (Check(mat, mRightUpperCorner))
-            tiles.add(new TileInfo(UpperRightCornerID));
+            tiles.add(new TileInfo(UpperRightCornerID, DecorationWeight));
         if (Check(mat, mRightLowerCorner))
-            tiles.add(new TileInfo(LowerRightCornerID));
+            tiles.add(new TileInfo(LowerRightCornerID, DecorationWeight));
         if (Check(mat, mLeftUpperCorner))
-            tiles.add(new TileInfo(UpperLeftCornerID));
+            tiles.add(new TileInfo(UpperLeftCornerID, DecorationWeight));
         if (Check(mat, mLeftLowerCorner))
-            tiles.add(new TileInfo(LowerLeftCornerID));
+            tiles.add(new TileInfo(LowerLeftCornerID, DecorationWeight));
         if (Check(mat, mRightUpperInsideCorner))
-            tiles.add(new TileInfo(UpperRightInsideCornerID));
+            tiles.add(new TileInfo(UpperRightInsideCornerID, DecorationWeight));
         if (Check(mat, mRightLowerInsideCorner))
-            tiles.add(new TileInfo(LowerRightInsideCornerID));
+            tiles.add(new TileInfo(LowerRightInsideCornerID, DecorationWeight));
         if (Check(mat, mLeftUpperInsideCorner))
-            tiles.add(new TileInfo(UpperLeftInsideCornerID));
+            tiles.add(new TileInfo(UpperLeftInsideCornerID, DecorationWeight));
         if (Check(mat, mLeftLowerInsideCorner))
-            tiles.add(new TileInfo(LowerLeftInsideCornerID));
+            tiles.add(new TileInfo(LowerLeftInsideCornerID, DecorationWeight));
 
         return tiles;
 
