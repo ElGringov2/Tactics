@@ -13,11 +13,11 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 /**
  * Created by mge637 on 13/05/2015.l
  */
-public class Wearable extends Gear {
+public class Wearable extends Item {
 
     private TiledTextureRegion mMaleTextureRegion;
     private TiledTextureRegion mFemaleTextureRegion;
-    private AnimatedSprite mSprite;
+    protected AnimatedSprite mSprite;
 
     private String pathToMaleGFX;
     private String pathToFemaleGFX;
@@ -30,6 +30,15 @@ public class Wearable extends Gear {
         this.pathToFemaleGFX = pathToFemaleGFX;
     }
 
+    /**
+     * Crée la ressource du sprite avec des valeurs personnalisées
+     * @param textureManager Une reference vers le texturemanager
+     * @param assetManager Une reference vers l'asset manager
+     * @param TextureWidth Largeur de la texture
+     * @param TextureHeight Hauteur de la textures
+     * @param TextureCol Nombre de sprite en colonnes
+     * @param TextureRow Nombre de sprite en lignes
+     */
     public void createResources(TextureManager textureManager, AssetManager assetManager, int TextureWidth, int TextureHeight, int TextureCol, int TextureRow) {
         BitmapTextureAtlas mBehindBodyTexture = new BitmapTextureAtlas(textureManager,  TextureWidth, TextureHeight, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         if (pathToFemaleGFX.equals(""))
@@ -37,13 +46,18 @@ public class Wearable extends Gear {
         else
             mFemaleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBehindBodyTexture, assetManager, pathToFemaleGFX, 0, 0, TextureCol, TextureRow);
         mBehindBodyTexture.load();
-
-
     }
 
+    /**
+     * Crée la ressource du sprite avec des valeurs standard (832px*1344px avec 13*21 sprite)
+     * @param textureManager Une reference vers le texturemanager
+     * @param assetManager Une reference vers l'asset manager
+     */
     public void createResources(TextureManager textureManager, AssetManager assetManager) {
         createResources(textureManager, assetManager, 832, 1344, 13, 21);
     }
+
+
 
     /**
      * Crée le sprite animé a une position spéciale
@@ -53,6 +67,7 @@ public class Wearable extends Gear {
      * @return Le sprite en question (accessible par la suite par getSprite();
      */
     public AnimatedSprite createSprite(float pPositionX, float pPositionY, VertexBufferObjectManager vertexBufferObjectManager) {
+
         if (pathToFemaleGFX.equals(""))
             return CreateMaleSprite(pPositionX, pPositionY, vertexBufferObjectManager);
         else

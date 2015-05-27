@@ -238,7 +238,8 @@ public class Entity {
 
 
     public void AddWearable(Wearable wear) {
-        this.Wear.add(wear);
+        if (wear != null)
+            this.Wear.add(wear);
 
     }
 
