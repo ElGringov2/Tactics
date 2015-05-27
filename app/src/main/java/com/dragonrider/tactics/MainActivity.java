@@ -3,8 +3,10 @@ package com.dragonrider.tactics;
 import com.dragonrider.tactics.Tilemap.CountrysideMapGenerator;
 import com.dragonrider.tactics.Tilemap.Map;
 import com.dragonrider.tactics.battle.BattleScene;
+import com.dragonrider.tactics.characterui.InventoryScene;
 import com.dragonrider.tactics.entity.Entity;
 import com.dragonrider.tactics.gear.Armor;
+import com.dragonrider.tactics.gear.GrayItem;
 import com.dragonrider.tactics.gear.Item;
 import com.dragonrider.tactics.gear.Weapon;
 import com.dragonrider.tactics.utils.Fonts;
@@ -18,6 +20,7 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.color.Color;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -45,7 +48,6 @@ public class MainActivity extends SimpleBaseGameActivity {
 
 
 
-        mCamera.setCenter(128f * 32f / 2f, 128f * 32f / 2f);
 
         return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
 
@@ -54,7 +56,7 @@ public class MainActivity extends SimpleBaseGameActivity {
 
     }
 
-    BattleScene scene;
+    Scene scene;
 
     @Override
     protected void onCreateResources() throws IOException {
@@ -72,7 +74,30 @@ public class MainActivity extends SimpleBaseGameActivity {
         Fonts.Init(fElementHeight, this.getTextureManager(), this.getFontManager(), this.getAssets());
 
 
+        ArrayList<Item> items = new ArrayList<>();
 
+        Random r = new Random(0);
+
+
+        for (int i = 0; i < 30; i++) {
+            GrayItem item = new GrayItem(r.nextInt(100), this.getVertexBufferObjectManager());
+            items.add(item);
+        }
+
+
+
+        Entity entity = new Entity(r.nextBoolean(),
+                Entity.BodyTypes.values()[r.nextInt(Entity.BodyTypes.values().length)],
+                Entity.HairTypes.values()[r.nextInt(Entity.HairTypes.values().length)],
+                Entity.HairColors.values()[r.nextInt(Entity.HairColors.values().length)]);
+        entity.CreateResources(this.getTextureManager(), this.getAssets());
+
+
+        scene = new InventoryScene(this.getVertexBufferObjectManager(), items, WIDTH, HEIGHT, entity);
+
+/*
+
+        mCamera.setCenter(128f * 32f / 2f, 128f * 32f / 2f);
         CountrysideMapGenerator generator = new CountrysideMapGenerator(0);
         Map map = generator.Generate(128);
 
@@ -83,7 +108,7 @@ public class MainActivity extends SimpleBaseGameActivity {
         scene=new BattleScene(map, mCamera, this.getVertexBufferObjectManager(), this.getTextureManager(), this.getAssets(), WIDTH, HEIGHT );
         Random r = new Random(0);
 
-        for (int i = 1; i < 63; i++) {
+        for (int i = 1; i < 34; i++) {
 
             int mX = r.nextInt(62) + 1;
             int mY = r.nextInt(62) + 1;
@@ -97,7 +122,7 @@ public class MainActivity extends SimpleBaseGameActivity {
                     Entity.HairColors.values()[r.nextInt(Entity.HairColors.values().length)]);
             entity.CreateResources(this.getTextureManager(), this.getAssets());
             entity.Animation = Entity.ANIM_STATE.ATTACK_SLASH;
-//            entity.Animation = Entity.ANIM_STATE.values()[r.nextInt(Entity.ANIM_STATE.values().length)];
+
             entity.Orientation = Entity.ORIENTATION.values()[r.nextInt(Entity.ORIENTATION.values().length)];
 
             entity.Name = "Char" + String.valueOf(i);
@@ -195,6 +220,7 @@ public class MainActivity extends SimpleBaseGameActivity {
         }
 
 
+*/
 
 
     }

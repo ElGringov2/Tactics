@@ -32,6 +32,8 @@ public class Entity {
     public static String[] sHairColors = {"black","blonde","blonde2","blue","blue2","brown","brown2","brunette","brunette2","dark-blonde","gold","gray","gray2","green","green2","light-blonde","light-blonde2","pink","pink2","purple","raven","raven2","redhead","redhead2","ruby-red","white-blonde","white-blonde2","white-cyan","white"};
 
 
+
+
     public enum BodyTypes {DARK, DARK2, DARKELF, DARKELF2, LIGHT, ORC, RED_ORC, TANNED, TANNED2}
     public enum HairTypes {BANGS,BANGSLONG,BANGSLONG2,BANGSSHORT,BEDHEAD,BUNCHES,JEWFRO,LONG,LONGHAWK,LONGKNOT,LOOSE,MESSY1,MESSY2,MOHAWK,PAGE,PAGE2,PARTED,PIXIE,PLAIN,PONYTAIL,PONYTAIL2,PRINCESS,SHORTHAWK,SHORTKNOT,SHOULDERL,SHOULDERR,SWOOP,UNKEMPT,XLONG,XLONGKNOT}
     public enum HairColors {BLACK,BLONDE,BLONDE2,BLUE,BLUE2,BROWN,BROWN2,BRUNETTE,BRUNETTE2,DARKBLONDE,GOLD,GRAY,GRAY2,GREEN,GREEN2,LIGHTBLONDE,LIGHTBLONDE2,PINK,PINK2,PURPLE,RAVEN,RAVEN2,REDHEAD,REDHEAD2,RUBYRED,WHITEBLONDE,WHITEBLONDE2,WHITECYAN,WHITE}
@@ -105,6 +107,11 @@ public class Entity {
     }
 
     public void AttachToScene (org.andengine.entity.Entity Layer, Scene mScene, VertexBufferObjectManager vertexBufferObjectManager) {
+
+        if (baseEntity.getParent() != null) {
+            baseEntity.getParent().detachChild(baseEntity);
+        }
+
 
         mBodySprite = new AnimatedSprite(0, 0, mBodyTextureRegion, vertexBufferObjectManager) {
             @Override
@@ -235,7 +242,18 @@ public class Entity {
         this.baseEntity.setPosition(NewPosX, NewPosY);
     }
 
+    public void setAnchorCenter(float x, float y) {
+        this.baseEntity.setAnchorCenter(x, y);
+    }
 
+    public void setSize(float width, float height) {
+
+        this.baseEntity.setSize(width, height);
+        this.mHairSprite.setSize(width, height);
+        this.mBodySprite.setSize(width, height);
+        for (Wearable wear : Wear)
+            wear.getSprite().setSize(width, height);
+    }
 
     public void AddWearable(Wearable wear) {
         if (wear != null)
@@ -301,5 +319,8 @@ public class Entity {
         PositionX = newX;
         PositionY = newY;
     }
+
+
+
 
 }

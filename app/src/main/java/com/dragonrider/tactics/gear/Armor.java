@@ -107,6 +107,23 @@ public class Armor extends Wearable {
         return sReturn;
     }
 
+
+    private static int getIconID(ArmorType armorType, ArmorClass armorClass) {
+        if (armorType == ArmorType.ARMOR_CHEST && armorClass == ArmorClass.ARMOR_CLASS_CLOTH) return 182;
+        if (armorType == ArmorType.ARMOR_CHEST && armorClass == ArmorClass.ARMOR_CLASS_LEATHER) return 184;
+        if (armorType == ArmorType.ARMOR_CHEST && armorClass == ArmorClass.ARMOR_CLASS_CHAIN) return 185;
+        if (armorType == ArmorType.ARMOR_CHEST && armorClass == ArmorClass.ARMOR_CLASS_PLATE) return 186;
+        if (armorType == ArmorType.ARMOR_CHEST && armorClass == ArmorClass.ARMOR_CLASS_GOLD) return 187;
+
+        if (armorType == ArmorType.ARMOR_ARMS && armorClass == ArmorClass.ARMOR_CLASS_CLOTH) return 182;
+        if (armorType == ArmorType.ARMOR_CHEST && armorClass == ArmorClass.ARMOR_CLASS_LEATHER) return 182;
+        if (armorType == ArmorType.ARMOR_CHEST && armorClass == ArmorClass.ARMOR_CLASS_CHAIN) return 182;
+        if (armorType == ArmorType.ARMOR_CHEST && armorClass == ArmorClass.ARMOR_CLASS_PLATE) return 182;
+        if (armorType == ArmorType.ARMOR_CHEST && armorClass == ArmorClass.ARMOR_CLASS_GOLD) return 182;
+
+        return 0;
+    }
+
     private ArmorType armorType;
 
 
@@ -144,7 +161,7 @@ public class Armor extends Wearable {
 
 
     /**
-     * Crée la ressource du sprite avec des valeurs personnalisées
+     * CrÃ©e la ressource du sprite avec des valeurs personnalisÃ©es
      * @param textureManager Une reference vers le texturemanager
      * @param assetManager Une reference vers l'asset manager
      * @param TextureWidth Largeur de la texture

@@ -54,8 +54,8 @@ public abstract class Item {
      * @param assetManager Une reference d'Asset Manager
      */
     public static void InitializeTextureRegion(TextureManager textureManager, AssetManager assetManager) {
-        BitmapTextureAtlas atlas = new BitmapTextureAtlas(textureManager, 120,120);
-        mIconTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(atlas, assetManager, "gfx/icons.png", 0,0,10,10);
+        BitmapTextureAtlas atlas = new BitmapTextureAtlas(textureManager, 476,1020);
+        mIconTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(atlas, assetManager, "gfx/icons.png", 0,0,14,30);
         atlas.load();
     }
 }

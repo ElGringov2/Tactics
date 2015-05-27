@@ -1,5 +1,12 @@
 package com.dragonrider.tactics.GameMechanics;
 
+import android.app.AlarmManager;
+
+import com.dragonrider.tactics.gear.Armor;
+import com.dragonrider.tactics.gear.Weapon;
+import com.dragonrider.tactics.gear.Wearable;
+
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +20,62 @@ public class Character {
     private int Endurance = 10;
 
     private List<Wound> Wounds = new ArrayList<>();
+
+    public Armor getChestArmor() {
+        return chestArmor;
+    }
+
+    public void setChestArmor(Armor chestArmor) {
+        this.chestArmor = chestArmor;
+    }
+
+    public Armor getLegArmor() {
+        return legArmor;
+    }
+
+    public void setLegArmor(Armor legArmor) {
+        this.legArmor = legArmor;
+    }
+
+    public Armor getFeetArmor() {
+        return feetArmor;
+    }
+
+    public void setFeetArmor(Armor feetArmor) {
+        this.feetArmor = feetArmor;
+    }
+
+    public Armor getArmArmor() {
+        return armArmor;
+    }
+
+    public void setArmArmor(Armor armArmor) {
+        this.armArmor = armArmor;
+    }
+
+    public Armor getHatArmor() {
+        return hatArmor;
+    }
+
+    public void setHatArmor(Armor hatArmor) {
+        this.hatArmor = hatArmor;
+    }
+
+    public Weapon getPrimaryHand() {
+        return primaryHand;
+    }
+
+    public void setPrimaryHand(Weapon primaryHand) {
+        this.primaryHand = primaryHand;
+    }
+
+    public Weapon getSecondaryHand() {
+        return secondaryHand;
+    }
+
+    public void setSecondaryHand(Weapon secondaryHand) {
+        this.secondaryHand = secondaryHand;
+    }
 
 
     public enum Skills {
@@ -97,6 +160,31 @@ public class Character {
         return ActionRating.CRITICAL_FAILURE;
     }
 
+
+    private Armor chestArmor;
+    private Armor legArmor;
+    private Armor feetArmor;
+    private Armor armArmor;
+    private Armor hatArmor;
+
+    private Weapon primaryHand;
+    private Weapon secondaryHand;
+
+
+    public List<Wearable> getAllWearables() {
+        ArrayList<Wearable> aReturn = new ArrayList<>();
+
+        aReturn.add(chestArmor);
+        aReturn.add(legArmor);
+        aReturn.add(feetArmor);
+        aReturn.add(armArmor);
+        aReturn.add(hatArmor);
+        aReturn.add(primaryHand);
+        aReturn.add(secondaryHand);
+
+
+        return aReturn;
+    }
 
 
 }
