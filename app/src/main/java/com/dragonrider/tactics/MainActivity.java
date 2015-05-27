@@ -4,6 +4,7 @@ import com.dragonrider.tactics.Tilemap.CountrysideMapGenerator;
 import com.dragonrider.tactics.Tilemap.Map;
 import com.dragonrider.tactics.battle.BattleScene;
 import com.dragonrider.tactics.entity.Entity;
+import com.dragonrider.tactics.gear.MeleeWeapon;
 import com.dragonrider.tactics.utils.Fonts;
 
 import org.andengine.engine.camera.BoundCamera;
@@ -87,16 +88,30 @@ public class MainActivity extends SimpleBaseGameActivity {
 
 
 
-
-            Entity entity = new Entity(false,
+            Entity entity = new Entity(r.nextBoolean(),
                     Entity.BodyTypes.values()[r.nextInt(Entity.BodyTypes.values().length)],
                     Entity.HairTypes.values()[r.nextInt(Entity.HairTypes.values().length)],
                     Entity.HairColors.values()[r.nextInt(Entity.HairColors.values().length)]);
             entity.CreateResources(this.getTextureManager(), this.getAssets());
-            entity.Animation = Entity.ANIM_STATE.values()[r.nextInt(Entity.ANIM_STATE.values().length)];
+            entity.Animation = Entity.ANIM_STATE.ATTACK_SLASH;
+//            entity.Animation = Entity.ANIM_STATE.values()[r.nextInt(Entity.ANIM_STATE.values().length)];
             entity.Orientation = Entity.ORIENTATION.values()[r.nextInt(Entity.ORIENTATION.values().length)];
 
             entity.Name = "Char" + String.valueOf(i);
+
+            MeleeWeapon weapon = MeleeWeapon.getWeapon(
+                    entity.getIsMale(),
+                    MeleeWeapon.MeleeWeaponType.values()[r.nextInt(MeleeWeapon.MeleeWeaponType.values().length)],
+                    r.nextInt(5),
+                    -r.nextInt(10),
+                    r.nextInt(10),
+                    this.getVertexBufferObjectManager(),
+                    this.getTextureManager(),
+                    this.getAssets());
+
+            if (weapon.getMeleeWeaponType() == MeleeWeapon.MeleeWeaponType.WEAPON_SPEAR) entity.Animation = Entity.ANIM_STATE.ATTACK_SPEAR;
+
+            entity.AddWearable(weapon);
 
             int id = scene.AddEntity(entity, this.getVertexBufferObjectManager());
             scene.setEntityPosition(id, mX, mY);

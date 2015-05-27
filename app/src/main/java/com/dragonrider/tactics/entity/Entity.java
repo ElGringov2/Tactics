@@ -2,8 +2,6 @@ package com.dragonrider.tactics.entity;
 
 
 import android.content.res.AssetManager;
-import android.os.Debug;
-import android.util.Log;
 
 import com.dragonrider.tactics.GameMechanics.Character;
 import com.dragonrider.tactics.gear.Wearable;
@@ -15,15 +13,12 @@ import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureManager;
 import org.andengine.opengl.texture.TextureOptions;
-import org.andengine.opengl.texture.atlas.ITextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -35,6 +30,7 @@ public class Entity {
     public static String[] sBodyTypes = {"dark", "dark2", "darkelf", "darkelf2", "light", "orc", "red_orc", "tanned", "tanned2"};
     public static String[] sHairTypes = {"bangs","bangslong","bangslong2","bangsshort","bedhead","bunches","jewfro","long","longhawk","longknot","loose","messy1","messy2","mohawk","page","page2","parted","pixie","plain","ponytail","ponytail2","princess","shorthawk","shortknot","shoulderl","shoulderr","swoop","unkempt","xlong","xlongknot"};
     public static String[] sHairColors = {"black","blonde","blonde2","blue","blue2","brown","brown2","brunette","brunette2","dark-blonde","gold","gray","gray2","green","green2","light-blonde","light-blonde2","pink","pink2","purple","raven","raven2","redhead","redhead2","ruby-red","white-blonde","white-blonde2","white-cyan","white"};
+
 
     public enum BodyTypes {DARK, DARK2, DARKELF, DARKELF2, LIGHT, ORC, RED_ORC, TANNED, TANNED2}
     public enum HairTypes {BANGS,BANGSLONG,BANGSLONG2,BANGSSHORT,BEDHEAD,BUNCHES,JEWFRO,LONG,LONGHAWK,LONGKNOT,LOOSE,MESSY1,MESSY2,MOHAWK,PAGE,PAGE2,PARTED,PIXIE,PLAIN,PONYTAIL,PONYTAIL2,PRINCESS,SHORTHAWK,SHORTKNOT,SHOULDERL,SHOULDERR,SWOOP,UNKEMPT,XLONG,XLONGKNOT}
@@ -85,13 +81,16 @@ public class Entity {
 
 
         for (int i = 0; i < Wear.size(); i++)
-            Wear.get(i).CreateResources(textureManager, assetManager);
+            Wear.get(i).createResources(textureManager, assetManager);
 
     }
 
     public String Name = "";
 
 
+    public boolean getIsMale() {
+        return mSex.equals("male");
+    }
 
 
     public interface IOnTouch {
@@ -123,26 +122,18 @@ public class Entity {
 
         mScene.registerTouchArea(mBodySprite);
 
-        Collections.sort(Wear, new Comparator<Wearable>() {
-            @Override
-            public int compare(Wearable w1, Wearable w2) {
-                return w1.DrawOrder > w2.DrawOrder ? -1 : (w1.DrawOrder == w2.DrawOrder ? 0 : 1);
-            }
-        });
 
-        for (int i = 0; i < Wear.size(); i++) {
-            if (Wear.get(i).DrawOrder < 2)
-                Layer.attachChild(Wear.get(i).CreateSprite(PositionX, PositionY, vertexBufferObjectManager));
-        }
+
+
 
         baseEntity.attachChild(mBodySprite);
         baseEntity.attachChild(mHairSprite);
 
 
-        for (int i = 0; i < Wear.size(); i++) {
-            if (Wear.get(i).DrawOrder > 2)
-                baseEntity.attachChild(Wear.get(i).CreateSprite(PositionX, PositionY, vertexBufferObjectManager));
-        }
+        for (Wearable wear : Wear)
+            baseEntity.attachChild(wear.getSprite());
+
+
 
 
         Layer.attachChild(baseEntity);
@@ -160,10 +151,10 @@ public class Entity {
 
     }
 
-//    public void Idle() {
-//        this.Animation = ANIM_STATE.IDLE;
-//        this.Animate();
-//    }
+    public void Idle() {
+        this.Animation = ANIM_STATE.IDLE;
+        this.Animate();
+    }
 
     public enum ORIENTATION {
         NORTH,
@@ -185,25 +176,31 @@ public class Entity {
 
     }
 
+    
+    private int[] GetFramesID() {
+        return GetFramesID(this.Animation, this.Orientation);
+    }
 
-    public int[] GetFramesID() {
+    
+    
+    public static int[] GetFramesID(ANIM_STATE Animation, ORIENTATION Orientation) {
 
         int[] mReturnArray = new int[] {};
 
-        if (this.Animation == ANIM_STATE.CASTING) mReturnArray = new int[] {0, 1, 2, 3, 4, 5, 6};
-        if (this.Animation == ANIM_STATE.ATTACK_SPEAR) mReturnArray = new int[] {52, 52, 54, 55, 56, 57, 58};
-        if (this.Animation == ANIM_STATE.WALKING) mReturnArray = new int[] {105, 106, 107, 108, 109, 110, 111, 112};
-        if (this.Animation == ANIM_STATE.ATTACK_SLASH) mReturnArray = new int[] {156, 157, 158, 159, 160, 161};
-        if (this.Animation == ANIM_STATE.ATTACK_BOW) mReturnArray = new int[] {208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220};
+        if (Animation == ANIM_STATE.CASTING) mReturnArray = new int[] {0, 1, 2, 3, 4, 5, 6};
+        if (Animation == ANIM_STATE.ATTACK_SPEAR) mReturnArray = new int[] {52, 52, 54, 55, 56, 57, 58};
+        if (Animation == ANIM_STATE.WALKING) mReturnArray = new int[] {105, 106, 107, 108, 109, 110, 111, 112};
+        if (Animation == ANIM_STATE.ATTACK_SLASH) mReturnArray = new int[] {156, 157, 158, 159, 160, 161};
+        if (Animation == ANIM_STATE.ATTACK_BOW) mReturnArray = new int[] {208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220};
 
-        if (this.Animation == ANIM_STATE.IDLE) mReturnArray = new int[] {104};
+        if (Animation == ANIM_STATE.IDLE) mReturnArray = new int[] {104};
 
-        if (this.Animation == ANIM_STATE.WAKE_UP) return new int[]{265, 264, 263, 262, 261, 260};
-        if (this.Animation == ANIM_STATE.DEAD) return new int[] {265};
+        if (Animation == ANIM_STATE.WAKE_UP) return new int[]{265, 264, 263, 262, 261, 260};
+        if (Animation == ANIM_STATE.DEAD) return new int[] {265};
 
 
         for (int i = 0; i < mReturnArray.length; i++) {
-            mReturnArray[i] = mReturnArray[i] + (this.Orientation.ordinal() * 13);
+            mReturnArray[i] = mReturnArray[i] + (Orientation.ordinal() * 13);
         }
 
 
@@ -211,8 +208,14 @@ public class Entity {
         return mReturnArray;
     }
 
-    public long[] GetFramesDuration() {
-        int[] frames = GetFramesID();
+
+    private long[] GetFramesDuration() {
+        return GetFramesDuration(this.Animation, this.Orientation);
+    }
+    
+    
+    public static long[] GetFramesDuration(ANIM_STATE Animation, ORIENTATION Orientation) {
+        int[] frames = GetFramesID(Animation, Orientation);
 
         long[] mReturnArray = new long[frames.length];
 
@@ -278,7 +281,7 @@ public class Entity {
 
         baseEntity.registerEntityModifier(mod);
 
-        //TODO Calculer l'angle pour l'animation
+
 
         double angle = Math.atan2(newY - PositionY, newX - PositionX);
 

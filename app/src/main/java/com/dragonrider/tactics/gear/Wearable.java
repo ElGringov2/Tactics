@@ -2,10 +2,6 @@ package com.dragonrider.tactics.gear;
 
 import android.content.res.AssetManager;
 
-import com.dragonrider.tactics.entity.Entity;
-
-import org.andengine.entity.modifier.PathModifier;
-import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.opengl.texture.TextureManager;
 import org.andengine.opengl.texture.TextureOptions;
@@ -18,44 +14,103 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
  * Created by mge637 on 13/05/2015.l
  */
 public class Wearable extends Gear {
-    // Dans l'ordre de 0 a 5, avec 2 = character
-    public int DrawOrder = 3;
 
-    private TiledTextureRegion mTextureRegion;
+    private TiledTextureRegion mMaleTextureRegion;
+    private TiledTextureRegion mFemaleTextureRegion;
     private AnimatedSprite mSprite;
 
-    private String pathToGFX = "";
+    private String pathToMaleGFX;
+    private String pathToFemaleGFX;
 
 
-    public Wearable(String PathToGFX, int DrawOrder) {
-        this.pathToGFX = PathToGFX;
-        this.DrawOrder = DrawOrder;
+
+
+    public Wearable(String pathToMaleGFX, String pathToFemaleGFX) {
+        this.pathToMaleGFX = pathToMaleGFX;
+        this.pathToFemaleGFX = pathToFemaleGFX;
     }
 
-    public void CreateResources(TextureManager textureManager, AssetManager assetManager) {
-        BitmapTextureAtlas mBehindBodyTexture = new BitmapTextureAtlas(textureManager,  832, 1344, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBehindBodyTexture, assetManager, pathToGFX, 0, 0, 13, 21);
+    public void createResources(TextureManager textureManager, AssetManager assetManager, int TextureWidth, int TextureHeight, int TextureCol, int TextureRow) {
+        BitmapTextureAtlas mBehindBodyTexture = new BitmapTextureAtlas(textureManager,  TextureWidth, TextureHeight, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        if (pathToFemaleGFX.equals(""))
+            mMaleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBehindBodyTexture, assetManager, pathToMaleGFX, 0, 0, TextureCol, TextureRow);
+        else
+            mFemaleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(mBehindBodyTexture, assetManager, pathToFemaleGFX, 0, 0, TextureCol, TextureRow);
         mBehindBodyTexture.load();
 
 
     }
 
+    public void createResources(TextureManager textureManager, AssetManager assetManager) {
+        createResources(textureManager, assetManager, 832, 1344, 13, 21);
+    }
 
-    public AnimatedSprite CreateSprite(float PositionX, float PositionY, VertexBufferObjectManager vertexBufferObjectManager) {
-        mSprite = new AnimatedSprite(PositionX, PositionY, mTextureRegion, vertexBufferObjectManager);
+    /**
+     * Crée le sprite animé a une position spéciale
+     * @param pPositionX Coordonée X
+     * @param pPositionY Coordonée Y
+     * @param vertexBufferObjectManager Reference du VBOM
+     * @return Le sprite en question (accessible par la suite par getSprite();
+     */
+    public AnimatedSprite createSprite(float pPositionX, float pPositionY, VertexBufferObjectManager vertexBufferObjectManager) {
+        if (pathToFemaleGFX.equals(""))
+            return CreateMaleSprite(pPositionX, pPositionY, vertexBufferObjectManager);
+        else
+            return CreateFemaleSprite(pPositionX, pPositionY, vertexBufferObjectManager);
+    }
+
+
+    /**
+     * Crée le sprite animé
+     * @param vertexBufferObjectManager Reference du VBOM
+     * @return Le sprite en question (accessible par la suite par getSprite();
+     */
+    public AnimatedSprite createSprite(VertexBufferObjectManager vertexBufferObjectManager) {
+        if (pathToFemaleGFX.equals(""))
+            return CreateMaleSprite(0, 0, vertexBufferObjectManager);
+        else
+            return CreateFemaleSprite(0, 0, vertexBufferObjectManager);
+    }
+
+
+    /**
+     * Obtient le sprite, pour peu qu'ils soit au préalable crée avec createSprite
+     * @return le sprite en question
+     */
+    public AnimatedSprite getSprite() {
+        return this.mSprite;
+    }
+
+
+    /**
+     * Crée le sprite pour un homme
+     * @param PositionX Position X
+     * @param PositionY Position Y
+     * @param vertexBufferObjectManager Reference du VBOM
+     * @return Le sprite.
+     */
+    private AnimatedSprite CreateMaleSprite(float PositionX, float PositionY, VertexBufferObjectManager vertexBufferObjectManager) {
+        mSprite = new AnimatedSprite(PositionX, PositionY, mMaleTextureRegion, vertexBufferObjectManager);
+        return mSprite;
+    }
+    /**
+     * Crée le sprite pour une femme
+     * @param PositionX Position X
+     * @param PositionY Position Y
+     * @param vertexBufferObjectManager Reference du VBOM
+     * @return Le sprite.
+     */
+    private AnimatedSprite CreateFemaleSprite(float PositionX, float PositionY, VertexBufferObjectManager vertexBufferObjectManager) {
+        mSprite = new AnimatedSprite(PositionX, PositionY, mFemaleTextureRegion, vertexBufferObjectManager);
         return mSprite;
     }
 
 
-    public void setPosition(float PositionX, float PositionY) {
-        mSprite.setPosition(PositionX, PositionY);
-    }
-
-
-    public void Animate(Entity.ANIM_STATE animation, Entity.ORIENTATION orientation) {
-
-    }
-
+    /**
+     * Anime le sprite
+     * @param Duration Durée d'animation (de chaque frame)
+     * @param IDs Liste des frames
+     */
     public void Animate(long[] Duration, int[] IDs) {
         mSprite.animate(Duration, IDs);
     }
