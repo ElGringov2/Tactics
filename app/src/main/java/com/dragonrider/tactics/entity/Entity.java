@@ -4,6 +4,7 @@ package com.dragonrider.tactics.entity;
 import android.content.res.AssetManager;
 
 import com.dragonrider.tactics.GameMechanics.Character;
+import com.dragonrider.tactics.gear.Item;
 import com.dragonrider.tactics.gear.Wearable;
 
 import org.andengine.entity.IEntity;
@@ -30,8 +31,6 @@ public class Entity {
     public static String[] sBodyTypes = {"dark", "dark2", "darkelf", "darkelf2", "light", "orc", "red_orc", "tanned", "tanned2"};
     public static String[] sHairTypes = {"bangs","bangslong","bangslong2","bangsshort","bedhead","bunches","jewfro","long","longhawk","longknot","loose","messy1","messy2","mohawk","page","page2","parted","pixie","plain","ponytail","ponytail2","princess","shorthawk","shortknot","shoulderl","shoulderr","swoop","unkempt","xlong","xlongknot"};
     public static String[] sHairColors = {"black","blonde","blonde2","blue","blue2","brown","brown2","brunette","brunette2","dark-blonde","gold","gray","gray2","green","green2","light-blonde","light-blonde2","pink","pink2","purple","raven","raven2","redhead","redhead2","ruby-red","white-blonde","white-blonde2","white-cyan","white"};
-
-
 
 
     public enum BodyTypes {DARK, DARK2, DARKELF, DARKELF2, LIGHT, ORC, RED_ORC, TANNED, TANNED2}
@@ -276,6 +275,10 @@ public class Entity {
 
 
     private Character mCharacter = new Character();
+
+    public Character getCharacter() {
+        return mCharacter;
+    }
 
 
 

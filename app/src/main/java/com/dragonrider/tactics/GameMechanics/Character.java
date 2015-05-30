@@ -1,8 +1,10 @@
 package com.dragonrider.tactics.GameMechanics;
 
 import android.app.AlarmManager;
+import android.support.annotation.Nullable;
 
 import com.dragonrider.tactics.gear.Armor;
+import com.dragonrider.tactics.gear.Item;
 import com.dragonrider.tactics.gear.Weapon;
 import com.dragonrider.tactics.gear.Wearable;
 
@@ -76,6 +78,8 @@ public class Character {
     public void setSecondaryHand(Weapon secondaryHand) {
         this.secondaryHand = secondaryHand;
     }
+
+
 
 
     public enum Skills {
@@ -171,6 +175,13 @@ public class Character {
     private Weapon secondaryHand;
 
 
+    private List<Item> mInventory = new ArrayList<>();
+
+    public List<Item> getInventory() {
+        return mInventory;
+    }
+
+
     public List<Wearable> getAllWearables() {
         ArrayList<Wearable> aReturn = new ArrayList<>();
 
@@ -187,4 +198,92 @@ public class Character {
     }
 
 
+    public void Equip(Wearable item) {
+
+        if (mInventory.contains(item))
+            mInventory.remove(item);
+
+
+
+        if (item instanceof Armor) {
+            if (((Armor)item).getArmorType() == Armor.ArmorType.ARMOR_ARMS)
+            {
+                Unequip(armArmor);
+                armArmor = (Armor)item;
+            }
+            if (((Armor)item).getArmorType() == Armor.ArmorType.ARMOR_HAT)
+            {
+                Unequip(hatArmor);
+                hatArmor = (Armor)item;
+            }
+            if (((Armor)item).getArmorType() == Armor.ArmorType.ARMOR_CHEST)
+            {
+                Unequip(chestArmor);
+                chestArmor = (Armor)item;
+            }
+            if (((Armor)item).getArmorType() == Armor.ArmorType.ARMOR_LEGS)
+            {
+                Unequip(legArmor);
+                legArmor = (Armor)item;
+            }
+            if (((Armor)item).getArmorType() == Armor.ArmorType.ARMOR_FEET)
+            {
+                Unequip(feetArmor);
+                feetArmor = (Armor)item;
+            }
+        }
+
+
+    }
+
+
+    public void Unequip(Wearable item) {
+
+        if (item == null) return;
+
+        if (item.equals(armArmor))
+        {
+            mInventory.add(item);
+            armArmor = null;
+        }
+        if (item.equals(hatArmor))
+        {
+            mInventory.add(item);
+            hatArmor = null;
+        }
+        if (item.equals(chestArmor))
+        {
+            mInventory.add(item);
+            chestArmor = null;
+        }
+        if (item.equals(legArmor))
+        {
+            mInventory.add(item);
+            legArmor = null;
+        }
+        if (item.equals(feetArmor))
+        {
+            mInventory.add(item);
+            feetArmor = null;
+        }
+
+        if (item.equals(primaryHand))
+        {
+            mInventory.add(item);
+            primaryHand = null;
+        }
+        if (item.equals(secondaryHand))
+        {
+            mInventory.add(item);
+            secondaryHand = null;
+        }
+
+    }
+
+
+    public void addItem(Item item) {
+
+        mInventory.add(item);
+        //TODO Poids de l'item
+    }
 }

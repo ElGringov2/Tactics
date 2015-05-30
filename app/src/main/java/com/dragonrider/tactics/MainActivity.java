@@ -74,15 +74,10 @@ public class MainActivity extends SimpleBaseGameActivity {
         Fonts.Init(fElementHeight, this.getTextureManager(), this.getFontManager(), this.getAssets());
 
 
-        ArrayList<Item> items = new ArrayList<>();
 
         Random r = new Random(0);
 
 
-        for (int i = 0; i < 30; i++) {
-            GrayItem item = new GrayItem(r.nextInt(100), this.getVertexBufferObjectManager());
-            items.add(item);
-        }
 
 
 
@@ -92,8 +87,16 @@ public class MainActivity extends SimpleBaseGameActivity {
                 Entity.HairColors.values()[r.nextInt(Entity.HairColors.values().length)]);
         entity.CreateResources(this.getTextureManager(), this.getAssets());
 
+        Armor armor = Armor.getItem(entity.getIsMale(), Armor.ArmorClass.ARMOR_CLASS_PLATE, Armor.ArmorType.ARMOR_ARMS, 0, Color.WHITE, this.getVertexBufferObjectManager(), this.getTextureManager(), this.getAssets(), 0);
+        entity.getCharacter().addItem(armor);
 
-        scene = new InventoryScene(this.getVertexBufferObjectManager(), items, WIDTH, HEIGHT, entity);
+        for (int i = 0; i < 30; i++) {
+            GrayItem item = new GrayItem(r.nextInt(100), this.getVertexBufferObjectManager());
+            entity.getCharacter().addItem(item);
+        }
+
+
+        scene = new InventoryScene(this.getVertexBufferObjectManager(), WIDTH, HEIGHT, entity);
 
 /*
 
@@ -230,6 +233,7 @@ public class MainActivity extends SimpleBaseGameActivity {
     @Override
     protected Scene onCreateScene() {
 
+        scene.setOnAreaTouchTraversalFrontToBack();
         return scene;
 
     }

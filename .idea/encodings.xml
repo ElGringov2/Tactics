@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/dragonrider/tactics/Tilemap/CountrysideMapGenerator.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/dragonrider/tactics/Tilemap/Map.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/dragonrider/tactics/Tilemap/MapGenerator.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/dragonrider/tactics/characterui/InventoryScene.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/dragonrider/tactics/entity/Entity.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/dragonrider/tactics/utils/PerlinNoise.java" charset="UTF-8" />
   </component>
